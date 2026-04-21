@@ -266,7 +266,7 @@ function App() {
 
                     return (
                       <tr key={user.id} className="row-reveal" style={{ '--delay': `${index * 65}ms` }}>
-                        <td>
+                        <td data-label="Name">
                           {isEditing ? (
                             <input
                               type="text"
@@ -283,7 +283,7 @@ function App() {
                             user.name || '-'
                           )}
                         </td>
-                        <td>
+                        <td data-label="Email">
                           {isEditing ? (
                             <input
                               type="email"
@@ -299,8 +299,8 @@ function App() {
                             user.email
                           )}
                         </td>
-                        <td>{formatDate(user.created_at)}</td>
-                        <td>
+                        <td data-label="Created">{formatDate(user.created_at)}</td>
+                        <td data-label="Actions">
                           <div className="actions">
                             {isEditing ? (
                               <>
