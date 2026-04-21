@@ -10,6 +10,8 @@ const ERROR_MESSAGES = {
   no_fields_to_update: 'No changes to save.',
 }
 
+const THEME_STORAGE_KEY = 'users_workspace_theme'
+
 function getErrorMessage(error) {
   const code = error?.data?.error ?? error?.message
   return ERROR_MESSAGES[code] ?? 'Something went wrong. Please try again.'
@@ -37,6 +39,10 @@ function App() {
   const [deletingId, setDeletingId] = useState(null)
   const [message, setMessage] = useState('')
   const [actionError, setActionError] = useState('')
+  const [theme, setTheme] = useState(() => {
+    if (typeof window === 'undefined') return 'light'
+    return window.localStorage.getItem(THEME_STORAGE_KEY) === 'dark' ? 'dark' : 'light'
+  })
 
   const [createForm, setCreateForm] = useState({ name: '', email: '' })
   const [editingId, setEditingId] = useState(null)
@@ -81,6 +87,20 @@ function App() {
       ignore = true
     }
   }, [])
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(THEME_STORAGE_KEY, theme)
+    }
+  }, [theme])
+
+  function toggleTheme() {
+    setTheme((current) => (current === 'light' ? 'dark' : 'light'))
+  }
 
   function startEdit(user) {
     setMessage('')
@@ -188,9 +208,14 @@ function App() {
           <h1>Users Workspace</h1>
           <p>Manage your users with a polished UI connected to your deployed backend API.</p>
         </div>
-        <button type="button" className="ghost" onClick={() => void loadUsers()}>
-          Refresh Data
-        </button>
+        <div className="hero-actions">
+          <button type="button" className="ghost" onClick={() => void loadUsers()}>
+            Refresh Data
+          </button>
+          <button type="button" className="ghost theme-toggle" onClick={toggleTheme}>
+            {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+          </button>
+        </div>
       </section>
 
       <section className="layout">
