@@ -1,12 +1,20 @@
-const API_ORIGIN = import.meta.env.VITE_API_ORIGIN ?? ''
+const API_ORIGIN = (import.meta.env.VITE_API_ORIGIN ?? 'https://supabase-db-sync-test.onrender.com').replace(/\/+$/, '')
 
 export async function request(path, options = {}) {
+  const method = (options.method ?? 'GET').toUpperCase()
+  const headers = {
+    ...(options.headers ?? {}),
+  }
+
+  const hasBody = options.body !== undefined && options.body !== null
+  if (hasBody && !headers['Content-Type'] && !headers['content-type']) {
+    headers['Content-Type'] = 'application/json'
+  }
+
   const response = await fetch(`${API_ORIGIN}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers ?? {}),
-    },
     ...options,
+    method,
+    headers,
   })
 
   if (response.status === 204) return null
