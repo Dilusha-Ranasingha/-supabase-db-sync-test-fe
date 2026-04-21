@@ -178,158 +178,168 @@ function App() {
 
   return (
     <main className="page">
-      <header className="header">
-        <h1>Users CRUD</h1>
-        <p>Connected to your deployed backend API.</p>
-      </header>
+      <div className="bg-orb orb-a" aria-hidden="true" />
+      <div className="bg-orb orb-b" aria-hidden="true" />
+      <div className="grain" aria-hidden="true" />
 
-      <section className="panel">
-        <h2>Create User</h2>
-        <form className="form" onSubmit={onCreateSubmit}>
-          <label>
-            Name (optional)
-            <input
-              type="text"
-              value={createForm.name}
-              onChange={(event) =>
-                setCreateForm((current) => ({
-                  ...current,
-                  name: event.target.value,
-                }))
-              }
-              placeholder="Jane Doe"
-            />
-          </label>
-
-          <label>
-            Email (required)
-            <input
-              type="email"
-              required
-              value={createForm.email}
-              onChange={(event) =>
-                setCreateForm((current) => ({
-                  ...current,
-                  email: event.target.value,
-                }))
-              }
-              placeholder="jane@example.com"
-            />
-          </label>
-
-          <button type="submit" disabled={createBusy}>
-            {createBusy ? 'Creating...' : 'Create'}
-          </button>
-        </form>
+      <section className="hero panel reveal">
+        <div>
+          <p className="eyebrow">Realtime Directory</p>
+          <h1>Users Workspace</h1>
+          <p>Manage your users with a polished UI connected to your deployed backend API.</p>
+        </div>
+        <button type="button" className="ghost" onClick={() => void loadUsers()}>
+          Refresh Data
+        </button>
       </section>
 
-      <section className="panel">
-        <div className="panel-head">
-          <h2>Users</h2>
-          <button type="button" className="ghost" onClick={() => void loadUsers()}>
-            Refresh
-          </button>
-        </div>
+      <section className="layout">
+        <section className="panel reveal create-panel">
+          <h2>Create User</h2>
+          <form className="form" onSubmit={onCreateSubmit}>
+            <label>
+              Name (optional)
+              <input
+                type="text"
+                value={createForm.name}
+                onChange={(event) =>
+                  setCreateForm((current) => ({
+                    ...current,
+                    name: event.target.value,
+                  }))
+                }
+                placeholder="Jane Doe"
+              />
+            </label>
 
-        {message ? <p className="message success">{message}</p> : null}
-        {actionError ? <p className="message error">{actionError}</p> : null}
+            <label>
+              Email (required)
+              <input
+                type="email"
+                required
+                value={createForm.email}
+                onChange={(event) =>
+                  setCreateForm((current) => ({
+                    ...current,
+                    email: event.target.value,
+                  }))
+                }
+                placeholder="jane@example.com"
+              />
+            </label>
 
-        {listLoading ? (
-          <p className="message">Loading users...</p>
-        ) : users.length === 0 ? (
-          <p className="message">No users found.</p>
-        ) : (
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Created</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user) => {
-                  const isEditing = editingId === user.id
-                  const isSaving = savingId === user.id
-                  const isDeleting = deletingId === user.id
+            <button type="submit" disabled={createBusy}>
+              {createBusy ? 'Creating...' : 'Create User'}
+            </button>
+          </form>
+        </section>
 
-                  return (
-                    <tr key={user.id}>
-                      <td>
-                        {isEditing ? (
-                          <input
-                            type="text"
-                            value={editForm.name}
-                            onChange={(event) =>
-                              setEditForm((current) => ({
-                                ...current,
-                                name: event.target.value,
-                              }))
-                            }
-                            placeholder="No name"
-                          />
-                        ) : (
-                          user.name || '-'
-                        )}
-                      </td>
-                      <td>
-                        {isEditing ? (
-                          <input
-                            type="email"
-                            value={editForm.email}
-                            onChange={(event) =>
-                              setEditForm((current) => ({
-                                ...current,
-                                email: event.target.value,
-                              }))
-                            }
-                          />
-                        ) : (
-                          user.email
-                        )}
-                      </td>
-                      <td>{formatDate(user.created_at)}</td>
-                      <td>
-                        <div className="actions">
-                          {isEditing ? (
-                            <>
-                              <button
-                                type="button"
-                                onClick={() => void onSaveEdit()}
-                                disabled={isSaving || !hasEditChanges}
-                              >
-                                {isSaving ? 'Saving...' : 'Save'}
-                              </button>
-                              <button type="button" className="ghost" onClick={cancelEdit}>
-                                Cancel
-                              </button>
-                            </>
-                          ) : (
-                            <>
-                              <button type="button" className="ghost" onClick={() => startEdit(user)}>
-                                Edit
-                              </button>
-                              <button
-                                type="button"
-                                className="danger"
-                                onClick={() => void onDelete(user.id)}
-                                disabled={isDeleting}
-                              >
-                                {isDeleting ? 'Deleting...' : 'Delete'}
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+        <section className="panel reveal users-panel">
+          <div className="panel-head">
+            <h2>Users</h2>
+            <span className="pill">{users.length} total</span>
           </div>
-        )}
+
+          {message ? <p className="message success">{message}</p> : null}
+          {actionError ? <p className="message error">{actionError}</p> : null}
+
+          {listLoading ? (
+            <p className="message">Loading users...</p>
+          ) : users.length === 0 ? (
+            <p className="message">No users found.</p>
+          ) : (
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((user, index) => {
+                    const isEditing = editingId === user.id
+                    const isSaving = savingId === user.id
+                    const isDeleting = deletingId === user.id
+
+                    return (
+                      <tr key={user.id} className="row-reveal" style={{ '--delay': `${index * 65}ms` }}>
+                        <td>
+                          {isEditing ? (
+                            <input
+                              type="text"
+                              value={editForm.name}
+                              onChange={(event) =>
+                                setEditForm((current) => ({
+                                  ...current,
+                                  name: event.target.value,
+                                }))
+                              }
+                              placeholder="No name"
+                            />
+                          ) : (
+                            user.name || '-'
+                          )}
+                        </td>
+                        <td>
+                          {isEditing ? (
+                            <input
+                              type="email"
+                              value={editForm.email}
+                              onChange={(event) =>
+                                setEditForm((current) => ({
+                                  ...current,
+                                  email: event.target.value,
+                                }))
+                              }
+                            />
+                          ) : (
+                            user.email
+                          )}
+                        </td>
+                        <td>{formatDate(user.created_at)}</td>
+                        <td>
+                          <div className="actions">
+                            {isEditing ? (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() => void onSaveEdit()}
+                                  disabled={isSaving || !hasEditChanges}
+                                >
+                                  {isSaving ? 'Saving...' : 'Save'}
+                                </button>
+                                <button type="button" className="ghost" onClick={cancelEdit}>
+                                  Cancel
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <button type="button" className="ghost" onClick={() => startEdit(user)}>
+                                  Edit
+                                </button>
+                                <button
+                                  type="button"
+                                  className="danger"
+                                  onClick={() => void onDelete(user.id)}
+                                  disabled={isDeleting}
+                                >
+                                  {isDeleting ? 'Deleting...' : 'Delete'}
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
       </section>
     </main>
   )
